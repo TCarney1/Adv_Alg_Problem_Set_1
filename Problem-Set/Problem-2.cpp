@@ -15,10 +15,11 @@ struct line{
 };
 
 bool isParallel(line l1, line l2);
+double calcSlope(line l1);
 
 int main(){
     // l1 and l2 are parallel, l3 is not parallel with either.
-    line l1 = {{0, 0}, {0, 4}}, l2 = {{2, 0}, {2, 5}}, l3 = {{1, 1}, {2, 3}};
+    line l1 = {{0, 0}, {1, 2}}, l2 = {{0, 1}, {2, 5}}, l3 = {{1, 1}, {2, 3}};
     line l4 = {{1, 1}, {2, 3}}, l5 = {{1, 3}, {2, 5}};
 
     line l6 = {{0,0}, {4, 0}};
@@ -34,7 +35,11 @@ int main(){
 
 
 bool isParallel(line l1, line l2){
+    double s1 = calcSlope(l1);
+    double s2 = calcSlope(l2);
+    return s1 == s2;
 
+    /*
     if(l1.p1.x == l1.p2.x){
         // line 1 is horizontal
         // check if line 2 is horizontal
@@ -58,5 +63,9 @@ bool isParallel(line l1, line l2){
         return true;
     } else {
         return false;
-    }
+    }*/
+}
+
+double calcSlope(line l1){
+    return abs(l1.p1.y - l1.p2.y) / abs(l1.p1.x = l1.p2.x);
 }
