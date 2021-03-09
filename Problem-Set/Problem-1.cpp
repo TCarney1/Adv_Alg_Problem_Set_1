@@ -18,20 +18,45 @@ bool intersect(line l1, line l2);
 void printClosedPath(point polygon[], int n);
 void swapPoints(point &a, point &b);
 double dist(point a, point b);
-int swap(point &p1, point &p2);
+void swap(point &p1, point &p2);
 int cmp(const void *vp1, const void *vp2);
+bool isPointInPolygon(point polygon[], int n, point p);
 
 
 
 point p0;
 
 int main(){
-    point polygon[] = {{0, 3}, {1, 1}, {2, 2}, {4, 4}, {0, 0}, {1, 2}, {3, 1}, {3, 3}};
-    int n = (sizeof(polygon))/(sizeof(polygon[0]));
+    point polygon1[] = {{0, 0}, {10, 0}, {10, 10}, {0, 10}};
+    point polygon2[] = {{0, 0}, {5, 5}, {5, 0}};
+    point p1 = {20, 20}, p2 = {5, 5}, p3 = {3, 3};
 
-    printClosedPath(polygon, n);  
+    int n = (sizeof(polygon1))/(sizeof(polygon1[0]));
+
+    std::cout << isPointInPolygon(polygon1, n, p1) << std::endl;
+    std::cout << isPointInPolygon(polygon1, n, p2) << std::endl;
 
     return 0;
+}
+
+bool isPointInPolygon(point polygon[], int n, point p){
+    // create point at same height as p, but INF far on x.
+    //point max = {std::numeric_limits<int>::max(), p.y};
+    point max = {1000, p.y};
+
+    // iterate through lines and check for intersects
+    int i = 0, count = 0;
+
+    do{
+        int next = (i+1)%n; // next point (including starting point)
+
+        if(intersect((line) {polygon[i], polygon[next]}, (line) {p, max})){
+            count++;
+        }
+        i=next;
+    }while(i != 0);
+
+    return !(count%2==0);
 }
 
 // returns true if 3 points form a clockwise angle.
@@ -56,12 +81,11 @@ bool intersect(line l1, line l2){
     if(isClockwise(l1.p1, l1.p2, l2.p1) != isClockwise(l1.p1, l1.p2, l2.p2)){
         // checks that the ends of l1 are NOT on the same sides of l2
         if(isClockwise(l2.p1, l2.p2, l1.p1) != isClockwise(l2.p1, l2.p2, l1.p2)){
-            std::cout << "Lines intersect!" << std::endl;
+            //std::cout << "Lines intersect!" << std::endl;
             return true;
         }
     }
-    
-    std::cout << "Lines do NOT intersect!" << std::endl;
+    //std::cout << "Lines do NOT intersect!" << std::endl;
     return false;
 }
 
@@ -109,7 +133,7 @@ double dist(point a, point b){
     return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 }
 
-int swap(point &p1, point &p2){
+void swap(point &p1, point &p2){
     point temp = p1;
     p1 = p2;
     p2 = temp;
