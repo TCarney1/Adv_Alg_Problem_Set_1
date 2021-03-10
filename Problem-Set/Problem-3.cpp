@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 /*
     Task:
@@ -22,8 +23,8 @@ struct line{
     point p1, p2;
 };
 
-bool isSquare(line lines[]);
-double length(line l);
+bool isASquare(line lines[]);
+double distance(line l);
 
 int main(){
     line square[] = {{{0, 0}, {0, 1}},{{0, 1}, {1, 1}}, {{1, 1}, {1, 0}}, {{1, 0}, {0, 0}}};
@@ -31,27 +32,27 @@ int main(){
     line rhombus[] = {{{0, 0}, {5, 0}},{{5, 0}, {8, 4}}, {{8, 4}, {3, 4}}, {{3, 4}, {0, 0}}};
     line lines[] = {{{0, 0}, {0, 2}},{{0, 1}, {1, 1}}, {{1, 1}, {1, 0}}, {{1, 0}, {0, 0}}};
     
-    isSquare(square); // true
-    isSquare(parallelogram); // false sides not equal
-    isSquare(rhombus); // false corners not square
-    isSquare(lines); // false not all sides connect
+    isASquare(square); // true
+    isASquare(parallelogram); // false sides not equal
+    isASquare(rhombus); // false corners not square
+    isASquare(lines); // false not all sides connect
    
 
     return 0;
 }
 
-bool isSquare(line lines[]){
+bool isASquare(line lines[]){
     // check same lengths
-    double len = length(lines[0]);
+    double len = distance(lines[0]);
     for(int i = 1; i < 4; i++){
-        if(len != length(lines[i])){
+        if(len != distance(lines[i])){
             std::cout << "FALSE: Sides not equal" << std::endl;
             return false;
         }
     }
 
     // check points meet
-    point start = lines[0].p1;
+    const point start = lines[0].p1;
     point curr = start;
     int i = 0, count = 0;
     do{
@@ -62,7 +63,8 @@ bool isSquare(line lines[]){
         }
         i = (i + 1) % 4;
         count++;
-        // 4! attempts
+
+        // ensure we loop through enough to return to the start
         if(count >= 24){
             std::cout << "FALSE: Not all sides connect" << std::endl;
             return false;
@@ -70,11 +72,36 @@ bool isSquare(line lines[]){
     }while(curr != start);
 
     //check for right angles
+    
+    double maxD = 0, maxD2 = 0;
+    point second;
+    for(int i = 1; i < 4; i++){
+        double d1 = distance((line){start, lines[i].p1});
+        double d2 = distance((line){start, lines[i].p2});
+        //find other diagonal
+        if(d1 < maxD && d2 < maxD){
+            second = lines[i].p1;
+        }
+        maxD = std::max(maxD, d1);
+        maxD = std::max(maxD, d2); 
+    }
 
-    std::cout << "TRUE: Is a square" << std::endl;
-    return true;
+    for(int i = 1; i < 4; i++){
+        double d1 = distance((line){second, lines[i].p1});
+        double d2 = distance((line){second, lines[i].p2});
+        maxD2 = std::max(maxD2, d1);
+        maxD2 = std::max(maxD2, d2); 
+    }
+    
+    if(maxD == maxD2){
+        std::cout << "TRUE: Is a square" << std::endl;
+        return true;
+    } else {
+        std::cout  << "FALSE: Corners not square" << std::endl;
+        return false;
+    }
 }
 
-double length(line l){
+double distance(line l){
     return (l.p1.x - l.p2.x) * (l.p1.x - l.p2.x) + (l.p1.y - l.p2.y) * (l.p1.y - l.p2.y);
 }
