@@ -30,11 +30,29 @@ int main(){
     point polygon1[] = {{0, 0}, {10, 0}, {10, 10}, {0, 10}};
     point polygon2[] = {{0, 0}, {5, 5}, {5, 0}};
     point p1 = {20, 20}, p2 = {5, 5}, p3 = {3, 3};
+    line l1 = {{0, 0}, {2, 2}};
+
+    point polygon3[] = {{0, 0}, {2, 2}, {4, 0}, {6, 2}, {8, 0}, {4, 8}};
 
     int n = (sizeof(polygon1))/(sizeof(polygon1[0]));
 
-    std::cout << isPointInPolygon(polygon1, n, p1) << std::endl;
-    std::cout << isPointInPolygon(polygon1, n, p2) << std::endl;
+    //std::cout << isPointInPolygon(polygon1, n, p1) << std::endl;
+    //std::cout << isPointInPolygon(polygon1, n, p2) << std::endl;
+
+
+    // PROBLEM 5: What does the intersect fucntion return when called with
+    // two copies of the same line
+    // ANSWER: False
+    // std::cout << intersect(l1, l1);
+
+    // PROBLEM 6: What is the maximum value achievable by count when
+    // isPointInPolygon is executed on a polygon with N vertices? Give example.
+    // ANSWER: n-1.
+
+    // polygon 3 has 6 vertices, has 5 intersections
+    isPointInPolygon(polygon3, 6, (point){1,1});
+
+
 
     return 0;
 }
@@ -55,6 +73,8 @@ bool isPointInPolygon(point polygon[], int n, point p){
         }
         i=next;
     }while(i != 0);
+
+    std::cout << count << std::endl;
 
     return !(count%2==0);
 }
